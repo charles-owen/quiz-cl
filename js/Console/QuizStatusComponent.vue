@@ -2,7 +2,7 @@
   <div class="content">
     <div class="full">
 
-      <memberfetcher :fetching="results === null">
+      <membersfetcher :fetching="results === null">
         <template slot-scope="fetcher">
           <table class="small">
             <tr>
@@ -24,14 +24,14 @@
             </tr>
           </table>
         </template>
-      </memberfetcher>
+      </membersfetcher>
 
     </div>
   </div>
 </template>
 
 <script>
-  import MemberFetcherComponent from 'course-cl/js/Console/MemberFetcherComponent.vue';
+  import MembersFetcherComponent from 'course-cl/js/Console/Members/MembersFetcherComponent.vue';
 
     export default {
         props: ['assigntag'],
@@ -103,7 +103,7 @@
             }
         },
         components: {
-            'memberfetcher': MemberFetcherComponent
+            'membersfetcher': MembersFetcherComponent
         },
         mounted() {
 
