@@ -44,8 +44,6 @@
 
             },
             submit() {
-                console.log('submit');
-                console.log(this.$refs['form']);
                 const form = this.$refs['form'];
                 const formData = new FormData(form);
                 const answer = formData.get('cl-answer');
