@@ -5,6 +5,7 @@
  */
 namespace CL\Quiz;
 
+use CL\Grades\Grades;
 use CL\Site\Site;
 use CL\Site\System\Server;
 use CL\Site\Api\JsonAPI;
@@ -12,6 +13,7 @@ use CL\Site\Api\APIException;
 use CL\Users\User;
 use CL\Course\Members;
 use CL\Course\Member;
+use CL\Course\Assignment;
 
 /**
  * API Resource for /api/users
@@ -191,8 +193,8 @@ class QuizApi extends \CL\Users\Api\Resource {
 	private function answer(Site $site, User $user, Server $server, array $params, $time) {
 		$session = $this->getSession($site, $user, $server, $params, $time);
 		$quiz = $session->quiz;
-
 		$assignment = $this->getAssignment($site, $user, $quiz);
+		$assignment->load();
 		$open = $assignment->is_open($user, $time);
 
 		$token = $session->token;
@@ -209,7 +211,7 @@ class QuizApi extends \CL\Users\Api\Resource {
 		$answerHTML = $question->submit($site, $user, $post);
 
 		// Only update tables if quiz is open
-		if($open) {
+		if($open || $user->staff) {
 			$quizAnswers = new QuizAnswers($site->db);
 			$quizAnswers->answer($token, $questionNum, $post['question-time'],
 				$questionHTML, $time, $question->student_answer, $question->right_answer,
@@ -226,6 +228,8 @@ class QuizApi extends \CL\Users\Api\Resource {
 			} else {
 				$quizTries->setPoints($token, $points);
 			}
+
+			$this->updateGrade($site, $user, $assignment, $quiz, $time);
 		}
 
 		$sessions = new QuizSessions($site->db);
@@ -245,7 +249,55 @@ class QuizApi extends \CL\Users\Api\Resource {
 		return $json;
 	}
 
+	private function updateGrade(Site $site, User $user, Assignment $assignment, Quiz $quiz, $time) {
+		// Does does the assignment have a quiz grading component?
+		if($assignment->grading === null) {
+			return;
+		}
 
+		$gradeQuiz = null;
+		foreach($assignment->grading->parts as $part) {
+			if($part instanceof GradeQuizzes) {
+				$gradeQuiz = $part;
+				break;
+			}
+		}
+
+		if($gradeQuiz === null) {
+			return;
+		}
+
+		// What is the best score for this quiz?
+		$quizTries = new QuizTries($site->db);
+		$best = $quizTries->getBest($user, $assignment->tag, $quiz->tag);
+		if($best !== null) {
+			$bestPoints = $best['points'];
+
+			// Get the grade for this assignment/quiz
+			$grades = new Grades($site->db);
+			$grade = $grades->get($user, $assignment->tag, $gradeQuiz->tag);
+
+			// Set the grade for this quiz
+			$grade->meta->set('results', $quiz->tag, [
+				'grade'=>$bestPoints,
+				'points'=>$quiz->points
+			]);
+
+			// Compute the current total points
+			$total = 0;
+			$points = 0;
+			foreach($gradeQuiz->tags as $tag) {
+				$points += $tag['points'];
+				$total += $grade->meta->get('results', $tag['tag'], ['grade'=>0])['grade'];
+			}
+
+			// Make that into a grade
+			if($total > 0) {
+				$grade->points = round(($total / $points) * $gradeQuiz->points, 0);
+				$grades->post($user, $grade);
+			}
+		}
+	}
 
 
 	private function question(Site $site, User $user, Server $server, array $params, $time) {

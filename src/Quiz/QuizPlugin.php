@@ -45,7 +45,7 @@ class QuizPlugin extends \CL\Site\Plugin {
 			$object->addProperty('quiz', false, true);
 
 			// Steps are also assignments
-			if($object instanceof \CL\Step\Step) {
+			if ($object instanceof \CL\Step\Step) {
 				$object->extend('add_quiz', function (\CL\Step\Step $step, $args) {
 					$tag = $args[0];
 					$name = $args[1];
@@ -56,6 +56,26 @@ class QuizPlugin extends \CL\Site\Plugin {
 					return $section;
 				});
 			}
+		} else if($object instanceof \CL\Grades\AssignmentGrading) {
+			$object->extend('add_quizzes', function(\CL\Grades\AssignmentGrading $grading, $args) {
+				$grading->add(new GradeQuizzes($args[0], $args[1]));
+			});
+
+			$object->extend('add_step_quizzes', function(\CL\Grades\AssignmentGrading $grading, $args) {
+				$assignment = $grading->assignment;
+				if($assignment instanceof \CL\Step\Step) {
+					$tags = [];
+					foreach($assignment->sectionsInOrder as $section) {
+						if($section instanceof QuizStepSection) {
+							$tags[] = ['tag'=>$section->tag, 'points'=>$section->points];
+						}
+					}
+					if(count($tags) > 0) {
+						$grading->add(new GradeQuizzes($args[0], $tags));
+					}
+				}
+			});
+
 		} else if($object instanceof ConsoleView) {
 			$object->addJS('quiz');
 		} else if($object instanceof \CL\Course\AssignmentView) {

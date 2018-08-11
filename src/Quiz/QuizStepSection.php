@@ -28,6 +28,25 @@ class QuizStepSection extends StepSection {
 		$this->quiz = new Quiz($this->step->tag, $this->tag, $points);
 	}
 
+	/**
+	 * Property get magic method
+	 *
+	 * <b>Properties</b>
+	 * Property | Type | Description
+	 * -------- | ---- | -----------
+	 *
+	 * @param string $property Property name
+	 * @return mixed
+	 */
+	public function __get($property) {
+		switch($property) {
+			case 'points':
+				return $this->quiz->points;
+
+			default:
+				return parent::__get($property);
+		}
+	}
 
 	/**
 	 * @page appearance-options

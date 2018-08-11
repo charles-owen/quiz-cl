@@ -11,6 +11,10 @@ use CL\Users\User;
 /** Describes a single quiz question 
  * 
  * This is a base class for quiz questions
+ *
+ * @cond
+ * @property string correct
+ * @endcond
  */
 abstract class QuizQuestion {
 	/** Constructor */
