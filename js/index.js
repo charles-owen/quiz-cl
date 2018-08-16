@@ -12,6 +12,6 @@ QuizFactory.create(Site.Site);
 //
 import {QuizConsole} from './Console/QuizConsole';
 
-if(global.Console !== undefined) {
-    QuizConsole.setup(global.Console);
+if(Site.Console !== undefined) {
+    QuizConsole.setup(Site.Console);
 }
