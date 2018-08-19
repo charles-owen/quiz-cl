@@ -49,7 +49,7 @@ class QuizStepSection extends StepSection {
 	}
 
 	/**
-	 * @page appearance-options
+	 * @page appearance-options Appearance options
 	 *
 	 * @section quiz-image-tags Quiz image tags
 	 *
