@@ -10,11 +10,12 @@ use CL\Site\Site;
 use CL\Site\System\Server;
 use CL\Site\Router;
 use CL\Console\ConsoleView;
+use CL\Site\Extendible;
 
 /**
  * Plugin class for the quiz Subsystem
  */
-class QuizPlugin extends \CL\Site\Plugin {
+class QuizPlugin extends \CL\Site\Plugin implements \CL\Site\IExtension {
 	/**
 	 * A tag that represents this plugin
 	 * @return string A tag like 'course', 'users', etc.
@@ -46,15 +47,7 @@ class QuizPlugin extends \CL\Site\Plugin {
 
 			// Steps are also assignments
 			if ($object instanceof \CL\Step\Step) {
-				$object->extend('add_quiz', function (\CL\Step\Step $step, $args) {
-					$tag = $args[0];
-					$name = $args[1];
-					$points = $args[2];
-					$section = new QuizStepSection($step, $tag, $name, $points);
-					$step->add($section);
-					$step->quiz = $step->quiz !== false ? $step->quiz + $points : $points;
-					return $section;
-				});
+				$object->extend('add_quiz', $this);
 			}
 		} else if($object instanceof \CL\Grades\AssignmentGrading) {
 			$object->extend('add_quizzes', function(\CL\Grades\AssignmentGrading $grading, $args) {
@@ -95,6 +88,27 @@ class QuizPlugin extends \CL\Site\Plugin {
 				$view->addJSON('cl-quiz-results', json_encode($best));
 			}
 		}
+	}
+
+	/**
+	 * @param Extendible $extendible Extendible that is calling this function
+	 * @param string $name Name of the function
+	 * @param array $args Arguments to the function
+	 * @return mixed
+	 */
+	public function extension(Extendible $extendible, $name, array $args) {
+		if ($name !== 'add_quiz') {
+			return null;
+		}
+
+		$step = $extendible;
+		$tag = $args[0];
+		$name = $args[1];
+		$points = $args[2];
+		$section = new QuizStepSection($step, $tag, $name, $points);
+		$step->add($section);
+		$step->quiz = $step->quiz !== false ? $step->quiz + $points : $points;
+		return $section;
 	}
 
 	/**
