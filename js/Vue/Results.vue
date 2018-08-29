@@ -59,7 +59,7 @@
         },
         methods: {
             time(value) {
-                return TimeFormatter.relative(new Date(value * 1000))
+                return TimeFormatter.relativeUNIX(value)
             },
             elapsed(start, end) {
                 if(end === null) {

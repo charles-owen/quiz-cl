@@ -55,9 +55,7 @@
                 Site.api.post(`/api/quiz/answer/${this.quiz.token}/${this.quiz.question}`, formData)
                     .then((response) => {
                         if (!response.hasError()) {
-                            console.log(response);
                             let data = response.getData('quiz-answer');
-                            console.log(data);
                             this.$emit('answer', data);
                         } else {
                             Site.toast(this, response);

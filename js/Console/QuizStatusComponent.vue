@@ -121,7 +121,6 @@
             Site.api.get('/api/quiz/all/' + this.assigntag, query)
                 .then((response) => {
                     if(!response.hasError()) {
-                        console.log(response);
                         let data = response.getData('quiz-results-all');
                         if(data !== null) {
                             this.process(data.attributes.results);

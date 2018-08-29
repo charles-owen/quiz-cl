@@ -102,7 +102,6 @@
           Site.api.get(`/api/quiz/result/${this.memberid}/${this.assigntag}/${this.quiztag}`, {})
               .then((response) => {
                   if(!response.hasError()) {
-                      console.log(response);
                       this.user = new Users.User(response.getData('quiz-user').attributes);
                       const member = this.user.member;
 
@@ -137,7 +136,7 @@
       },
       methods: {
           time(value) {
-              return TimeFormatter.relative(new Date(value * 1000))
+              return TimeFormatter.relativeUNIX(value);
           },
           elapsed(start, end) {
               if(end === null) {
@@ -154,8 +153,6 @@
               Site.api.get(`/api/quiz/result/token/${token}`, {})
                   .then((response) => {
                       if(!response.hasError()) {
-                          console.log(response);
-
                           this.token = token;
 
                           const answers = response.getData('quiz-answers');

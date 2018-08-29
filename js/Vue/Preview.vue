@@ -51,7 +51,6 @@
                     .then((response) => {
                         if (!response.hasError()) {
                             let data = response.getData('quiz-question');
-                            console.log(data);
                             this.question = data.attributes.question;
                             this.time = data.attributes.time;
                             this.comment = data.attributes.comment;
@@ -75,21 +74,6 @@
                   Site.toast(this, 'You must choose an option');
                   return;
                 }
-
-//                Site.api.post(`/api/quiz/answer/${this.quiz.token}/${this.quiz.question}`, formData)
-//                    .then((response) => {
-//                        if (!response.hasError()) {
-//                            console.log(response);
-//                            let data = response.getData('quiz-answer');
-//                            console.log(data);
-//                            this.$emit('answer', data);
-//                        } else {
-//                            Site.toast(this, response);
-//                        }
-//                    })
-//                    .catch((error) => {
-//                        Site.toast(this, error);
-//                    });
 
             }
         }
