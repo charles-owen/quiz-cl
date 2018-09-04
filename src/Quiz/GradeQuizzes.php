@@ -61,7 +61,7 @@ class GradeQuizzes extends GradePart {
 	 */
 	public function createStatus($memberId, array $grades) {
 		if(isset($grades[$this->tag])) {
-			return $grades[$this->tag];
+			return $grades[$this->tag]->points;
 		}
 
 		return 0;
