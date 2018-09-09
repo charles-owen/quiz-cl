@@ -3,8 +3,8 @@
  * The main Quiz entry point
  */
 
-import {QuizFactory} from "./QuizFactory";
-import {QuizConsole} from './Console/QuizConsole';
+import {QuizFactory} from "./js/QuizFactory";
+import {QuizConsole} from './js/Console/QuizConsole';
 
 //
 // Create the Quiz components

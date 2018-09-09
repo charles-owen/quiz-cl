@@ -2,7 +2,7 @@
   "name": "quiz-cl",
   "version": "0.0.1",
   "description": "CourseLib Website quiz components",
-  "main": "js/index.js",
+  "main": "index.js",
   "keywords": [
     "Education",
     "LTI"
