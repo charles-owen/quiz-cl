@@ -32,7 +32,7 @@ class CheckUML {
 		$stripped = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', trim($given));
 		
 		// For each of these characters, remove any surrounding white space
-		$clean = array(';', ',', '(', ')', '=', ':', '[', ']', '/', '!', '>', '<');
+		$clean = array(';', ',', '(', ')', '=', ':', '[', ']', '/', '!', '>', '<', '&lt;', '&gt;');
 		foreach($clean as $c) {
 			$stripped = preg_replace('/\s*\\' . $c . '\s*/', $c, $stripped);
 		}
