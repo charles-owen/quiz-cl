@@ -1,11 +1,12 @@
-/**
- * @file
- * Quiz system console components
- */
 
 import QuizStatusComponent from './QuizStatusComponent.vue';
 import QuizResultComponent from './QuizResultComponent.vue';
 
+/**
+ * @file
+ * Quiz system console components
+ * @constructor
+ */
 export let QuizConsole = function() {
 }
 
