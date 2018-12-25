@@ -14,6 +14,8 @@ use CL\Users\User;
  *
  * @cond
  * @property string correct
+ * @property string text
+ * @property string comment
  * @endcond
  */
 abstract class QuizQuestion {
@@ -64,6 +66,9 @@ abstract class QuizQuestion {
 			/* The expected correct answer */
 			case 'right_answer':
 				return $this->rightanswer;
+
+			case 'mustProvideMessage':
+				return $this->mustProvideMessage;
 
 			default:
 				$trace = debug_backtrace();
@@ -127,6 +132,9 @@ abstract class QuizQuestion {
 				$this->display_correct = $value;
 				break;
 
+			case 'mustProvideMessage':
+				$this->mustProvideMessage = $value;
+				break;
 
 			default:
 				$trace = debug_backtrace();
@@ -145,11 +153,21 @@ abstract class QuizQuestion {
 	 * Override to actually present a question
 	 * @param Site $site Site object
 	 * @param User $user User taking the quiz
-     * @param $preview TRUE if staff preview mode
 	 * @return string HTML
 	 */
-	public function present(Site $site, User $user, $preview=false) {
+	public function present(Site $site, User $user) {
 		return "";
+	}
+
+	/**
+	 * Present content after the Quiz box. This is used to
+	 * add in things like the Cirsim IDE or the Playground
+	 * @param Site $site
+	 * @param User $user
+	 * @return string
+	 */
+	public function presentAfter(Site $site, User $user) {
+		return '';
 	}
 
 	/** Prepare a question for presentation
@@ -163,6 +181,7 @@ abstract class QuizQuestion {
 
 	/**
 	 * Return answers for the question when viewed in preview mode.
+	 * @property Site $site The Site object
 	 * @return array of answer options
 	 */
 	public function previewerAnswers(Site $site) {
@@ -170,9 +189,38 @@ abstract class QuizQuestion {
 	}
 
     /** Handle a submit of the question answer from the POST page
-     * @returns HTML for the question */
+     * @return string HTML for the question */
     public function submit(Site $site, User $user, $post) {
         return '';
+    }
+
+	/**
+	 * Generate data to send to the client for this question
+	 * @param Site $site Site object
+	 * @param User $user Current user
+	 * @param int $time Current time
+	 * @param bool $preview If true, this is a preview view
+	 * @return array
+	 */
+    public function data(Site $site, User $user, $time, $preview = false) {
+    	$html = $this->present($site, $user);
+    	$after = $this->presentAfter($site, $user);
+
+	    $data = [
+		    'question'=>$html,
+		    'time'=>$time,
+		    'after'=>$after];
+
+	    if($preview) {
+	    	$data['answers'] = $this->previewerAnswers($site);
+	    	$data['comment'] = $this->comment;
+	    }
+
+	    if($this->mustProvideMessage !== null) {
+	    	$data['mustProvideMessage'] = $this->mustProvideMessage;
+	    }
+
+	    return $data;
     }
 	
 	protected $text = null;		///< Text of the question
@@ -187,6 +235,8 @@ abstract class QuizQuestion {
 	protected $points = 1;		        ///< Total points for a correct answer
 	protected $file = null;		        ///< File for a loaded quiz question
 	protected $display_correct = false;	///< Display correct answer?
+
+	private $mustProvideMessage = null;
 
 	private     $files = null;	///< Optional array of files this question could come from
 }

@@ -183,7 +183,7 @@ TABLE;
 //        $assignment = $this->get_assignment();
 //        $course = $assignment->get_course();
 //
-//        $quizTries = new \Quiz\QuizTries($course);
+//        $quizTries = new CL\Quiz\QuizTries($course);
 //
 //        foreach($this->tags as $tag => $num) {
 //            $total += $num;

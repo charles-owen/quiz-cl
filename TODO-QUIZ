@@ -1,3 +1,4 @@
 
 FIXME: Quiz session should only be invalidated if the quiz is actually started.
-FIXME: Quiz should allow staff to take before opening
+
+TEST: Ensure must supply a value works for question

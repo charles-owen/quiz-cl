@@ -44,7 +44,8 @@ class QuizQuestionValue extends QuizQuestion {
 	 * display_correct - If false, answers are not displayed.
 	 *
 	 * @param string $property Name of private member to set
-	 * @param mixed $value Value to set */
+	 * @param mixed $value Value to set
+	 */
 	public function __set($property, $value) {
 		switch($property) {
 			case 'answer':
@@ -70,60 +71,24 @@ class QuizQuestionValue extends QuizQuestion {
 	 * Present the question to the user
 	 * @param Site $site Site object
 	 * @param User $user User we are presenting the question for
-	 * @param bool $preview TRUE if staff preview mode
-	 * @returns string HTML for the quiz question
+	 * @return string HTML for the quiz question
 	 */
-	public function present(Site $site, User $user, $preview=false) {
-		$html = parent::present($site, $user, $preview);
-
-		$root = $site->root;
+	public function present(Site $site, User $user) {
+		$html = parent::present($site, $user);
 
 		/*
 		 * The question
 		 */
 		$html .= $this->text;
 
-		if($preview) {
-			$answer0 = $this->answer[0];
-			$html .= <<<ANS
-<hr /><p class="answer">Answer: <span>$answer0</span>
-ANS;
-			if(count($this->answer) > 1) {
-				for($i=1; $i<count($this->answer); $i++) {
-					$html .= " or <span>" . $this->answer[$i] . "</span>";
-				}
-			}
+		$html .= <<<END
+<p><input type="text" class="cl-answer-required" name="cl-answer"></p>
+END;
 
-			if(count($this->displayed_answer) > 0) {
-				$answer0 = $this->displayed_answer[0];
-				$html .= <<<ANS
-<p class="answer">Displayed Answer: <span>$answer0</span>
-ANS;
-				if(count($this->displayed_answer) > 1) {
-					for($i=1; $i<count($this->answer); $i++) {
-						$html .= " or <span>" . $this->displayed_answer[$i] . "</span>";
-					}
-				}
-			}
-
-			$html .= "</p>";
-
-			// Comment preview
-			if($this->comment !== null) {
-				$html .= "<p>Comment:</p>";
-				$html .= $this->comment;
-			}
-		} else {
+		if($this->type === self::Float) {
 			$html .= <<<END
-<p><input type="text" name="cl-answer"></p>
+<p class="cl-quiz-answer-note">Your answer must be within $this->tolerance</p>
 END;
-
-			if($this->type === self::Float) {
-				$html .= <<<END
-<p class="answernote">Your answer must be within $this->tolerance</p>
-END;
-			}
-
 		}
 
 		return $html;
@@ -133,7 +98,10 @@ END;
 
 	/**
 	 * Handle a submit of the question answer from the POST page
-	 * @returns string HTML for the question
+	 * @param Site $site The Site object
+	 * @param User $user The User object
+	 * @param $post $_POST
+	 * @return string HTML for the question
 	 */
 	public function submit(Site $site, User $user, $post) {
     	$answer = trim(htmlentities($post['cl-answer']));

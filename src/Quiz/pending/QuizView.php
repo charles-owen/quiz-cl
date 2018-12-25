@@ -3,7 +3,7 @@
  * View class implementing a view of a Quiz
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 /** View class implementing a view of a Quiz
  *

@@ -1,7 +1,3 @@
-/**
- * @file
- */
-
 import '../_quiz.scss';
 import QuizVue from './Vue/Initial.vue';
 import QuestionVue from './Vue/Question.vue';
@@ -14,9 +10,14 @@ import PreviewVue from './Vue/Preview.vue';
 
 import {States} from './States';
 
+/**
+ * Quiz presentation Vue
+ * @param site Site object
+ * @constructor
+ */
 export let Quiz = function(site) {
 
-    this.start = function(element) {
+    this.initialize = function(element) {
         let quiz = JSON.parse(element.textContent);
 
         const template = `
@@ -25,15 +26,17 @@ export let Quiz = function(site) {
   <previewer v-if="quiz.preview !== undefined" :quiz="quiz" v-on:preview="preview($event)"></previewer>
 </div>`;
 
-        new Site.Vue({
+        new site.Vue({
             el: element,
             template: template,
+            site,
             data: function() {
                 return {
                     quiz: quiz,
                     state: States.INITIAL,
                     page: 'initial',
-                    file: null
+                    file: null,
+	                after: null
                 };
             },
             components: {
@@ -51,6 +54,11 @@ export let Quiz = function(site) {
                     this.page = 'expired';
                 } else if(this.quiz.closed === true) {
                     this.page = 'closed';
+                }
+
+                this.after = document.getElementById('cl-quiz-after');
+                if(this.after !== null) {
+                	this.after.innerHTML = '';
                 }
             },
             methods: {
@@ -70,6 +78,10 @@ export let Quiz = function(site) {
                         case States.RESULTS:
                             this.page = 'results';
                             this.state = state;
+
+	                        if(this.after !== null) {
+		                        this.after.innerHTML = '';
+	                        }
                             break;
                     }
 

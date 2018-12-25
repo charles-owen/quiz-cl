@@ -13,9 +13,14 @@ use CL\Users\User;
 
 /**
  * Representation of a Quiz
+ *
+ * @cond
+ * @property array questions
+ * @endcond
  */
 class Quiz {
-	/** Constructor
+	/**
+	 * Constructor
 	 * @param string $assignTag Assignment this quiz is for
 	 * @param string $quizTag A tag unique to this quiz in this assignment
 	 * @param int $points Number of points assigned to this quiz
@@ -128,7 +133,7 @@ class Quiz {
      * @return QuizQuestionMulti The question object reference
      */
     public function new_question_multi() {
-        $question = new \Quiz\QuizQuestionMulti();
+        $question = new CL\Quiz\QuizQuestionMulti();
         $this->add_question($question);
         return $question;
     }
@@ -169,7 +174,7 @@ HTML;
 		// Only update tables if the quiz is active
 		if(!$this->is_expired($user, $time)) {
 			$course = $this->assignment->get_course();
-			$quizAnswers = new \Quiz\QuizAnswers($course);
+			$quizAnswers = new CL\Quiz\QuizAnswers($course);
 
 			//
 			// Update the quizanswer table with this answer
@@ -191,7 +196,6 @@ HTML;
      */
     public function get_tries(User $user) {
         $course = $this->assignment->get_course();
-        $quizAnswers = new \Quiz\QuizAnswers($course);
         $quizTries = new QuizTries($course);
 
         return $quizTries->get_tries($user, $this->assignment, $this->tag);
@@ -321,7 +325,7 @@ HTML;
 	protected $questions =[];	    ///< The quiz questions in order
     protected $completeMsg = null;  ///< Optional message to display on quiz completion
 	protected $points;		        ///< Points for this quiz
-	private   $lightning = null;	///< If this is a lightning quiz, set to number of seconds
-	private $fileDir = null;        ///< File directory for loaded quiz files
-	private   $fileQuestions = [];  ///< Mapping from a filename to a question
+	private   $lightning = null;	// If this is a lightning quiz, set to number of seconds
+	private   $fileDir = null;      // File directory for loaded quiz files
+	private   $fileQuestions = [];  // Mapping from a filename to a question
 }

@@ -4,7 +4,7 @@
  * Quiz answer explorer view.
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 /**
  * Quiz answer explorer view.

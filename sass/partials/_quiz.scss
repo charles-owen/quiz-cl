@@ -6,7 +6,7 @@ div.cl-quiz {
   min-height: 15em;
   align-items: center;
   justify-content: center;
-  background: #e8f7f3;
+  background: $quiz-background;
 
   >div {
     width: 100%;
@@ -25,16 +25,6 @@ div.cl-quiz {
   h2 {
     border: 0;
     margin-top: 14px;
-  }
-
-  p.answer {
-    margin-left: 4.3rem;
-    text-align: left;
-    text-indent: -4rem;
-
-    span {
-      font-weight: bold;
-    }
   }
 
   div.cl-multi {
@@ -57,7 +47,7 @@ div.cl-quiz {
   }
 
   tr.best td {
-    background: #eeffee;
+    background: #dde;
   }
 
   div.previewer {
@@ -91,6 +81,12 @@ div.cl-quiz {
       text-align: center;
       border-bottom: 1px solid black;
     }
+  }
+
+  p.cl-quiz-answer-note {
+    text-align: center;
+    font-style: italic;
+    color: #800;
   }
 }
 

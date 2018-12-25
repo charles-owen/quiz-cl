@@ -32,6 +32,7 @@ class QuizAnswers extends \CL\Tables\Table {
 	 * @param string $studentAnswer
 	 * @param string $rightAnswer
 	 * @param int $points
+	 * @return true on success
 	 */
     public function answer($token, $num, $questionTime, $questionText, $answerTime, $studentAnswer, $rightAnswer, $points)
     {
@@ -42,10 +43,12 @@ insert into $this->tablename(token, num, questiontime, question, answertime, stu
 values(?, ?, ?, ?, ?, ?, ?, ?)
 SQL;
 
+        $exec = [$token, $num, $this->timeStr($questionTime), $questionText,
+	        $this->timeStr($answerTime), $studentAnswer, $rightAnswer, $points];
+
         try {
 	        $stmt = $pdo->prepare($sql);
-	        return $stmt->execute([$token, $num, $this->timeStr($questionTime), $questionText,
-		        $this->timeStr($answerTime), $studentAnswer, $rightAnswer, $points]);
+	        return $stmt->execute($exec);
         } catch(\PDOException $ex) {
         	return false;
         }

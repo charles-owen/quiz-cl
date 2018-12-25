@@ -42,16 +42,16 @@ class QuizQuestionMulti extends QuizQuestion {
 	}
 	
 	/** Add a good answer
-	 * @param $good The good answer */
+	 * @param string $good The good answer */
 	public function good($good) { $this->answers[] = array($good, true); }
 	
 	/** Add a bad answer
-	 * @param $bad The bad answer */
+	 * @param string $bad The bad answer */
 	public function bad($bad) { $this->answers[] = array($bad, false); }
 	
 	/** Convert an answer index into the letter for the answer 
 	 * @param $index Answer index starting at 0
-	 * @returns Associated letter answer */
+	 * @return Associated letter answer */
 	public static function to_option($index) {
 		return chr(ord('A') + $index);
 	}
@@ -60,11 +60,10 @@ class QuizQuestionMulti extends QuizQuestion {
 	 * Present the question to the user
 	 * @param Site $site Site object
 	 * @param User $user User we are presenting the question for
-	 * @param bool $preview TRUE if staff preview mode
-	 * @returns string HTML for the quiz question
+	 * @return string HTML for the quiz question
 	 */
-	public function present(Site $site, User $user, $preview=false) {
-		$html = parent::present($site, $user, $preview);
+	public function present(Site $site, User $user) {
+		$html = parent::present($site, $user);
 
 		$root = $site->root;
 
@@ -80,23 +79,14 @@ class QuizQuestionMulti extends QuizQuestion {
 		foreach($this->answers as $answer) {
 			$option = QuizQuestionMulti::to_option($num);
 			$html .= <<<OPTION
-<p><label>$option: <input name="cl-answer" value="$num" type="radio"> $answer[0]
+<p><label>$option: <input class="cl-answer-required" name="cl-answer" value="$num" type="radio"> $answer[0]
 OPTION;
 
-			if($preview && $answer[1]) {
-				$html .= " <img src=\"$root/vendor/cl/site/img/checkmenu.png\" width=\"24\" height=\"25\" alt=\"Good Answer\"/>";
-			}
 			$html .= '</label></p>';
 			$num++;
 		}
 
 		$html .= '</div>';
-
-		// Comment preview
-		if($preview && ($this->comment != null)) {
-			$html .= "<hr /><p>Comment:</p>";
-			$html .= $this->comment;
-		}
 
 		return $html;
 	}

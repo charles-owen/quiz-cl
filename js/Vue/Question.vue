@@ -12,31 +12,39 @@
 </template>
 
 <script>
-    import {States} from '../States';
+	import {QuizData} from '../QuizData';
 
-    export default {
+	export default {
         data: function() {
             return {
                 question: null,
-                time: 0
+                time: 0,
+                mustProvideMessage: undefined
             }
         },
         props: [
             'quiz'
         ],
         mounted() {
-            Site.api.post(`/api/quiz/question/${this.quiz.token}/${this.quiz.question}`, {})
+            this.$site.api.post(`/api/quiz/question/${this.quiz.token}/${this.quiz.question}`, {})
                 .then((response) => {
                     if (!response.hasError()) {
                         let data = response.getData('quiz-question');
                         this.question = data.attributes.question;
                         this.time = data.attributes.time;
+	                      this.mustProvideMessage = data.attributes.mustProvideMessage;
+
+                        const after = document.getElementById('cl-quiz-after');
+                        if(after !== null) {
+                        	after.innerHTML = data.attributes.after;
+                        	this.$site.message('cl-quiz-after-installed', after);
+                        }
                     } else {
-                        Site.toast(this, response);
+	                    this.$site.toast(this, response);
                     }
                 })
                 .catch((error) => {
-                    Site.toast(this, error);
+	                this.$site.toast(this, error);
                 });
         },
         methods: {
@@ -44,25 +52,22 @@
 
             },
             submit() {
-                const form = this.$refs['form'];
-                const formData = new FormData(form);
-                const answer = formData.get('cl-answer');
-                if(answer === null) {
-                  Site.toast(this, 'You must choose an option');
-                  return;
-                }
+	            const formData = QuizData.get(this, this.mustProvideMessage);
+	            if(formData === null) {
+	            	return;
+              }
 
-                Site.api.post(`/api/quiz/answer/${this.quiz.token}/${this.quiz.question}`, formData)
+	            this.$site.api.post(`/api/quiz/answer/${this.quiz.token}/${this.quiz.question}`, formData)
                     .then((response) => {
                         if (!response.hasError()) {
                             let data = response.getData('quiz-answer');
                             this.$emit('answer', data);
                         } else {
-                            Site.toast(this, response);
+	                        this.$site.toast(this, response);
                         }
                     })
                     .catch((error) => {
-                        Site.toast(this, error);
+	                    this.$site.toast(this, error);
                     });
 
             }

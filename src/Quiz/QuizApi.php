@@ -313,7 +313,7 @@ class QuizApi extends \CL\Users\Api\Resource {
 		// Session must be either in prestart or answer for previous question
 		//
 		if($session->state === QuizSession::PRESTART) {
-			if($open) {
+			if($open || $user->staff) {
 				// Create a new quiz try...
 				$quizTries = new QuizTries($site->db);
 				if(!$quizTries->start($user, $session, $time)) {
@@ -335,10 +335,10 @@ class QuizApi extends \CL\Users\Api\Resource {
 		$sessions->update($session);
 
 		$question = $quiz->getQuestion($questionNum);
-		$html = $question->present($site, $user);
+		$data = $question->data($site, $user, $time,false);
 
 		$json = new JsonAPI();
-		$json->addData('quiz-question', $questionNum, ['question'=>$html, 'time'=>$time]);
+		$json->addData('quiz-question', $questionNum, $data);
 		return $json;
 	}
 
@@ -363,14 +363,10 @@ class QuizApi extends \CL\Users\Api\Resource {
 		$quiz = $session->quiz;
 
 		$question = $quiz->getFileQuestion($file);
-		$html = $question->present($site, $user);
+		$data = $question->data($site, $user, $time,true);
 
 		$json = new JsonAPI();
-		$json->addData('quiz-question', 0, [
-			'question'=>$html,
-			'answers'=>$question->previewerAnswers($site),
-			'comment'=>$question->comment,
-			'time'=>$time]);
+		$json->addData('quiz-question', 0, $data);
 		return $json;
 	}
 

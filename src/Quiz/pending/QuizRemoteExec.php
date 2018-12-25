@@ -4,7 +4,7 @@
  * Quiz with remote execution of compilations and testing
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 /**
  * Quiz with remote execution of compilations and testing

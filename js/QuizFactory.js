@@ -15,7 +15,7 @@ QuizFactory.create = function(site) {
     site.start( () => {
         let element = document.querySelector('div.cl-quiz');
         if(element !== null) {
-            quiz.start(element);
+            quiz.initialize(element);
         }
     });
 

@@ -4,7 +4,7 @@
  * View class to present a view of remove exec quizzes
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 
 class QuizRemoteExecView extends QuizView {

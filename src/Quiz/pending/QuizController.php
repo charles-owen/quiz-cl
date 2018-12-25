@@ -4,7 +4,7 @@
  * Controller for quiz execution
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 /**
  * Controller for quiz execution

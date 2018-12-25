@@ -5,7 +5,7 @@
  * send their result to a remove system for compilation and testing.
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
 /**
  * Quiz questions that have a text entry box and allow students to

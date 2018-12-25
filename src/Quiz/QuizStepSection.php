@@ -8,9 +8,15 @@ namespace CL\Quiz;
 
 use CL\Step\Step;
 use CL\Step\StepSection;
+use CL\Site\ViewAux;
 
 /**
  * Step sections that present a quiz.
+ *
+ * @cond
+ * @property Quiz quiz
+ * @property int points
+ * @endcond
  */
 class QuizStepSection extends StepSection {
 	const QUIZ = 'Q';		///< Indicates this section is a quiz
@@ -43,10 +49,14 @@ class QuizStepSection extends StepSection {
 			case 'points':
 				return $this->quiz->points;
 
+			case 'quiz':
+				return $this->quiz;
+
 			default:
 				return parent::__get($property);
 		}
 	}
+
 
 	/**
 	 * @page appearance-options Appearance options
@@ -102,9 +112,12 @@ class QuizStepSection extends StepSection {
 	/** Set the quiz function for this page
 	 * @param $function Quiz definition function */
 	public function set_quiz($function) {
-        if(is_callable($function)) {
+		if(is_callable($function)) {
 			// We have a quiz, use the function to define it
 			$function($this->quiz);
+        } else if($function instanceof Quiz) {
+        	$this->quiz = $function;
+        	$this->quiz->fileDir = $this->step->dir;
         }
 	}
 

@@ -4,11 +4,18 @@
  * in the form of a matrix.
  */
 
-namespace Quiz;
+namespace CL\Quiz;
 
-/** Describes a question expecting a response
- * in the form of a matrix.
+use CL\Site\Site;
+use CL\Users\User;
+
+/**
+ * Describes a question expecting a response in the form of a matrix.
  *
+ * @cond
+ * @property array problem
+ * @property array answer
+ * @endcond
  */
 class QuizQuestionMatrix extends QuizQuestion {
 	const Float = 1;		///< Matrix with floating point values
@@ -17,23 +24,29 @@ class QuizQuestionMatrix extends QuizQuestion {
 	const Integer = 3;		///< Matrix with integer values
 
 	/** Constructor 
-	 * @param $type The answer type */
+	 * @param int $type The answer type */
 	public function __construct($type = QuizQuestionMatrix::Float) {
 		parent::__construct();
 		
 		$this->type = $type;
 		$this->display_correct = false;
 	}
-	
+
 	/** Magic method to set parameters for the question
 	 *
 	 * This version accepts answer. See also the base class
 	 * (QuizQuestion::__set()) version.
 	 *
-	 * @param $name Name of private member to set
-	 * @param $value Value to set */
-	public function __set($name, $value) {
-		switch($name) {
+	 * <b>Properties</b>
+	 * Property | Type | Description
+	 * -------- | ---- | -----------
+	 * answer | array | An expected answer (multiple can be supplied
+	 *
+	 * @param string $property Name of private member to set
+	 * @param mixed $value Value to set
+	 */
+	public function __set($property, $value) {
+		switch($property) {
 			case 'problem':
 				$this->problem = $value;
 				break;
@@ -55,114 +68,44 @@ class QuizQuestionMatrix extends QuizQuestion {
 				break;
 
 			default:
-				parent::__set($name, $value);
+				parent::__set($property, $value);
 				break;
 		}
 	}
 
 
-    /** Present the question to the user
-     * @param string $sessionName The name of the session variable for the QuizSession object
-     * @param $preview TRUE if staff preview mode
-     * @returns string HTML for the quiz question */
-	public function present(\User $user, $sessionName, $preview=false) {
-		$html = parent::present($user, $sessionName, $preview);
-		
+    /**
+     * Present the question to the user
+     * @param Site $site Site object
+     * @param User $user User we are presenting the question for
+     * @param bool $preview TRUE if staff preview mode
+     * @return string HTML for the quiz question
+     */
+	public function present(Site $site, User $user, $preview=false) {
+		$html = parent::present($site, $user, $preview);
+
 		/*
 		 * The question
 		 */
 		$html .= $this->text;
-        $libroot = $this->quiz->get_assignment()->get_course()->get_libroot();
 
-		if($preview) {
-			$answer0 = $this->present_answer($this->answer[0]);
-			$html .= <<<ANS
-<hr /><p class="answer">Answer: <span>$answer0</span>
-ANS;
-			if(count($this->answer) > 1) {
-				for($i=1; $i<count($this->answer); $i++) {
-					$answer = $this->present_answer($this->answer[i]);
-					$html .= " or <span>$answer</span>";
-				}
-			}
-			
-			$html .= "</p>";
-			
-			// Comment preview
-			if($this->comment !== null) {
-				$html .= "<p>Comment:</p>";
-				$html .= $this->comment;
-			}
-		} else {
-			$html .= <<<HTML
-<form id="question" action="" method="post">
-HTML;
+		$html .= $this->present_problem($this->problem);
 
-			$html .= $this->present_problem($this->problem);
-
-			$html .= <<<HTML
-<p class="center">
-<input name="Submit" type="submit" value="submit" /> <span id="message" class="smallred">&nbsp;</span>
-</p>
-HTML;
-
-			if($this->type === self::Float) {
-				$html .= <<<END
- <span class="answernote">Your answer must be within $this->tolerance</span>
+		if($this->type === self::Float) {
+			$html .= <<<END
+<p class="cl-quiz-answer-note">Your answer must be within $this->tolerance</p>
 END;
-			}
-
-			$extraCheck = '';
-			if($this->type == self::TruthTable) {
-				$extraCheck = <<<JS
-if(obj.value != 1 && obj.value != 0) {
-	$('#message').text("Must enter 1 or 0 in each location");
-	fail = true;
-	return false;
-}
-JS;
-
-			}
-
-			$html .= <<<HTML
-</form><script>
-var present_post = function() {
-	$('#question').submit(function(event) {
-	    event.preventDefault();
-	    var answer = $('#question').serializeArray();
-	    var fail = false;
-	    
-	    answer.forEach(function(obj) {
-	    	if(obj.value === "") {
-	    		$('#message').text("Must enter a value in each location");
-	    		fail = true;
-	    		return false;
-	    	}
-	    	
-	    	$extraCheck
-	    });
-	    
-	    if(fail) {
-	    	return false;
-	    }
-
-		var data = {session: '$sessionName', cmd: 'submit', answer: answer};
-		$.ajax({
-			type: "POST",  
-			url: "$libroot/quiz/quiz-post.php",
-			data: data,
-			success: function(data) {
-				$("#quiz").html(data);
-				present_post();
-			}  
-		}); 
-
-		return false; // prevent default
-	});	
-}
-</script>
-HTML;
 		}
+
+//			$extraCheck = '';
+//			if($this->type == self::TruthTable) {
+//				$extraCheck = <<<JS
+//if(obj.value != 1 && obj.value != 0) {
+//	$('#message').text("Must enter 1 or 0 in each location");
+//	fail = true;
+//	return false;
+//}
+//JS;
 		
 		return $html;
 	}
@@ -204,9 +147,9 @@ HTML;
 			foreach($row as $cell) {
 				// Determine the cell content
 				if($cell === '?') {
-					$id = "m-$r-$c";
+					$id = "cl-quiz-matrix-$r-$c";
 					$content = <<<HTML
-<input type="text" name="$id" id="$id">
+<input type="text" class="cl-answer-required" name="$id" id="$id">
 HTML;
 				} else {
 					$content = $cell;
@@ -231,22 +174,37 @@ HTML;
 	}
 
 
+	/**
+	 * Return answers for the question when viewed in preview mode.
+	 * @return array of answer options
+	 */
+	public function previewerAnswers(Site $site) {
+		$answers = [];
+		foreach($this->answer as $answer) {
+			$answers[] = $this->present_answer($answer);
+		}
+		return $answers;
+	}
 
-	/** Handle a submit of the question answer from the POST page
-	 * @returns string HTML for the question */
-    public function submit($post) {
+
+	/**
+	 * Handle a submit of the question answer from the POST page
+	 * @param Site $site The Site object
+	 * @param User $user The User object
+	 * @param $post $_POST
+	 * @return string HTML for the question
+	 */
+	public function submit(Site $site, User $user, $post) {
 		$answer = $this->problem;
 
-		foreach($post['answer'] as $item) {
-			$name = explode('-', trim(htmlentities($item['name'])));
-			if($name[0] !== 'm') {
-				continue;
+		// Get the data from the form
+		for($r=1;  $r<=count($answer); $r++) {
+			for($c=1; $c<=count($answer[$r-1]); $c++) {
+				$id = "cl-quiz-matrix-$r-$c";
+				if(isset($post[$id]) && $answer[$r-1][$c-1] === '?') {
+					$answer[$r-1][$c-1] = trim(htmlentities($post[$id]));
+				}
 			}
-
-			$r = $name[1];
-			$c = $name[2];
-
-			$answer[$r-1][$c-1] = trim(htmlentities($item['value']));
 		}
 
     	$html = $this->text;
@@ -254,13 +212,13 @@ HTML;
 		
 		// We allow multiple good answers, check
 		// them all until we find a right answer
-		foreach($this->answer as $goodanswer) {
-			if(count($answer) != count($goodanswer)) {
+		foreach($this->answer as $goodAnswer) {
+			if(count($answer) != count($goodAnswer)) {
 				$good = false;
 			} else {
 				for($r=0; $r<count($answer); $r++) {
 					$rowA = $answer[$r];
-					$rowG = $goodanswer[$r];
+					$rowG = $goodAnswer[$r];
 					if(count($rowA) != count($rowG)) {
 						$good = false;
 						break;
@@ -298,9 +256,9 @@ HTML;
 		
         $html .= "<p>You said: " . $this->present_answer($answer) . "</p>";
 
-		$this->correct = $good ? $this->get_points() : 0;
+		$this->correct = $good ? $this->points : 0;
         $this->studentanswer = $this->present_answer($answer);
-		$goodanswer = '';
+		$goodAnswer = '';
 		
     	// Did they get it right?
         if($good) {
@@ -309,14 +267,14 @@ HTML;
 			$html .= "<p>That is incorrect!</p>";
 
 			if($this->display_correct) {
-				$goodanswer = $this->present_answer($this->answer[0]);
+				$goodAnswer = $this->present_answer($this->answer[0]);
 				if(count($this->answer) > 1) {
 					for($i=1; $i<count($this->answer); $i++) {
-						$goodanswer .= " or " . $this->present_answer($this->answer[$i]);
+						$goodAnswer .= " or " . $this->present_answer($this->answer[$i]);
 					}
 				}
 
-				$html .= "<p>The correct answer is $goodanswer</p>";
+				$html .= "<p>The correct answer is $goodAnswer</p>";
 			}
 
            	if($this->comment != null) {
@@ -324,7 +282,7 @@ HTML;
             } 
         }
 		
-		$this->rightanswer = $goodanswer;
+		$this->rightanswer = $goodAnswer;
 		return $html;
     }
 

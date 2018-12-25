@@ -149,31 +149,47 @@ HTML;
 			$data['preview'] = $questions;
 		}
 
-		// Is this quiz open for submission?
-		if($this->assignment->after_due($this->user, $this->time)) {
-			$data['expired'] = true;
-		}
+		if(!$this->user->is_staff()) {
+			// Is this quiz open for submission?
+			if($this->assignment->after_due($this->user, $this->time)) {
+				$data['expired'] = true;
+			}
 
-		// Is this quiz open for submission?
-		if(!$this->assignment->is_open($this->user, $this->time)) {
-			$data['closed'] = true;
+			// Is this quiz open for submission?
+			if(!$this->assignment->is_open($this->user, $this->time)) {
+				$data['closed'] = true;
+			}
 		}
 
 		$json = htmlspecialchars(json_encode($data), ENT_NOQUOTES);
 
+		$after = $this->presentAfter();
+
 		$html = <<<HTML
-<div class="cl-quiz">$json</div>
+<div class="cl-quiz">$json</div>$after
 HTML;
 
 		return $html;
 	}
 
+	/**
+	 * Present content that goes after the quiz. This is overridden in custom
+	 * views when extra content such as Cirsim belongs at the bottom of the page.
+	 * @return string HTML
+	 */
+	public function presentAfter() {
+		return '';
+	}
 
-	private $time;      ///< Time we instantiate this object
-	private $site;      ///< Site object
-	private $course;    ///< Course object
-	private $user;      ///< Active user
-	private $quiz;	    ///< Quiz this is a view of
-	private $assignment;    ///< Assignment this quiz is for
-	private $splash;    ///< The quiz splash screen
+	private $time;      // Time we instantiate this object
+	private $site;      // Site object
+	private $course;    // Course object
+	private $user;      // Active user
+
+	/** @var Quiz Quiz this is a view of */
+	private $quiz;
+
+	/** @var \CL\Course\Assignment Assignment this quiz is for */
+	private $assignment;
+	private $splash;    // The quiz splash screen
 }
