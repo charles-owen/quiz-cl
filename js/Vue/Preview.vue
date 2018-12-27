@@ -51,19 +51,21 @@
                 this.$site.api.get(`/api/quiz/preview/${this.quiz.token}`, query)
                     .then((response) => {
                         if (!response.hasError()) {
-                            let data = response.getData('quiz-question');
-                            console.log(data);
-                            this.question = data.attributes.question;
-                            this.time = data.attributes.time;
-                            this.comment = data.attributes.comment;
-                            this.answers = data.attributes.answers;
-                            this.mustProvideMessage = data.attributes.mustProvideMessage;
+                          let data = response.getData('quiz-question');
+                          this.question = data.attributes.question;
+                          this.time = data.attributes.time;
+                          this.comment = data.attributes.comment;
+                          this.answers = data.attributes.answers;
+                          this.mustProvideMessage = data.attributes.mustProvideMessage;
 
-                            const after = document.getElementById('cl-quiz-after');
-                            if(after !== null) {
-                              after.innerHTML = data.attributes.after;
-	                            this.$site.message('cl-quiz-after-installed', after);
-                            }
+	                        const after = document.getElementById('cl-quiz-after');
+	                        if(after !== null) {
+		                        after.innerHTML = data.attributes.after;
+	                        }
+
+                          this.$site.Vue.nextTick(() => {
+	                          this.$site.message('cl-quiz-after-installed', null);
+                          });
                         } else {
 	                        this.$site.toast(this, response);
                         }

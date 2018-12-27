@@ -44,9 +44,9 @@
                         this.tries = data.attributes.tries;
                         this.high = 0;
                         for(let tried of this.tries) {
-                            if(tried.points > this.high) {
-                                this.high = tried.points;
-                            }
+                          if(+tried.points > +this.high) {
+                              this.high = tried.points;
+                          }
                         }
                     } else {
                         Site.toast(this, response);

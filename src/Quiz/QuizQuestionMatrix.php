@@ -112,7 +112,8 @@ END;
 	
 
 	private function present_answer($a) {
-		$html = '<table class="' . $this->class . '">';
+		$class = $this->class === 'cl-expand' ? '' : $this->class . ' cl-expand';
+		$html = '<table class="' . $class . '">';
 		$r = 1;
 		foreach($a as $row) {
 			$html .= '<tr>';
@@ -134,12 +135,13 @@ END;
 			$r++;
 		}
 
-		$html .= '</table>';
+		$html .= '</table></div>';
 		return $html;
 	}
 
 	private function present_problem($a) {
-		$html = '<table class="' . $this->class . '">';
+		$class = $this->class === 'cl-expand' ? '' : $this->class . ' cl-expand';
+		$html = '<table class="' . $class . '">';
 		$r = 1;
 		foreach($a as $row) {
 			$html .= '<tr>';

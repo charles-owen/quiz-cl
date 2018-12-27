@@ -29,16 +29,19 @@
             this.$site.api.post(`/api/quiz/question/${this.quiz.token}/${this.quiz.question}`, {})
                 .then((response) => {
                     if (!response.hasError()) {
-                        let data = response.getData('quiz-question');
-                        this.question = data.attributes.question;
-                        this.time = data.attributes.time;
-	                      this.mustProvideMessage = data.attributes.mustProvideMessage;
+                      let data = response.getData('quiz-question');
+                      this.question = data.attributes.question;
+                      this.time = data.attributes.time;
+                      this.mustProvideMessage = data.attributes.mustProvideMessage;
 
-                        const after = document.getElementById('cl-quiz-after');
-                        if(after !== null) {
-                        	after.innerHTML = data.attributes.after;
-                        	this.$site.message('cl-quiz-after-installed', after);
-                        }
+	                    const after = document.getElementById('cl-quiz-after');
+	                    if(after !== null) {
+		                    after.innerHTML = data.attributes.after;
+	                    }
+
+	                    this.$site.Vue.nextTick(() => {
+		                    this.$site.message('cl-quiz-after-installed', null);
+	                    });
                     } else {
 	                    this.$site.toast(this, response);
                     }

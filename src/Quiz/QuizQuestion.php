@@ -13,9 +13,10 @@ use CL\Users\User;
  * This is a base class for quiz questions
  *
  * @cond
+ * @property string comment
  * @property string correct
  * @property string text
- * @property string comment
+ * @property int points
  * @endcond
  */
 abstract class QuizQuestion {

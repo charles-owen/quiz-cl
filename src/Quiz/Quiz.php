@@ -104,6 +104,10 @@ class Quiz {
 				$this->fileDir = $value;
 				break;
 
+			case 'afterWide':
+				$this->afterWide = $value;
+				break;
+
 			default:
 				$trace = debug_backtrace();
 				trigger_error(
