@@ -13,7 +13,7 @@ export let QuizConsole = function() {
 QuizConsole.setup = function(Console) {
     Console.tables.add({
         title: 'Quiz',
-        order: 15,
+        order: 60,
         api: '/api/quiz/tables'
     });
 
