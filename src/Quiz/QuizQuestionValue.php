@@ -151,7 +151,7 @@ END;
 					break;
 
 				case self::CanonicalSumOfProducts:
-					$check = new \Logic\CheckSOP("A", "B", "C");
+					$check = new \CL\Logic\CheckSOP("A", "B", "C");
 					$good = $check->check($goodanswer, $answer);
 					if(!$good) {
 						$extra = "<p>Checker indicated: " . $check->get_msg() . "</p>";
