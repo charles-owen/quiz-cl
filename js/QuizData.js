@@ -18,7 +18,6 @@ QuizData.get = function(vue, mustProvideMessage) {
 		// named cl-answer exists.
 		const answer = formData.get(input.name);
 		if(answer === null || answer === '') {
-			console.log(mustProvideMessage);
 			if(mustProvideMessage !== undefined) {
 				vue.$site.toast(vue, mustProvideMessage);
 				return null;
