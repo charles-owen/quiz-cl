@@ -1,10 +1,9 @@
-/**
- * @file
- *
- */
-
 import {Quiz} from "./Quiz";
 
+/**
+ * The Quiz system factory
+ * @constructor
+ */
 export const QuizFactory = function() {
 }
 

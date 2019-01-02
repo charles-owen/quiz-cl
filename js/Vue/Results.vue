@@ -24,53 +24,52 @@
 </template>
 
 <script>
-  import {TimeFormatter} from 'site-cl/js/TimeFormatter';
 
-    export default {
-        props: [
-            'quiz'
-        ],
-        data: function() {
-            return {
-                tries: null,
-                high: 0
-            }
-        },
-        mounted() {
-            Site.api.get(`/api/quiz/results/${this.quiz.assigntag}/${this.quiz.quiztag}`, {})
-                .then((response) => {
-                    if (!response.hasError()) {
-                        let data = response.getData('quiz-results');
-                        this.tries = data.attributes.tries;
-                        this.high = 0;
-                        for(let tried of this.tries) {
-                          if(+tried.points > +this.high) {
-                              this.high = tried.points;
-                          }
-                        }
-                    } else {
-                        Site.toast(this, response);
-                    }
-                })
-                .catch((error) => {
-                    Site.toast(this, error);
-                });
+	export default {
+		props: [
+			'quiz'
+		],
+		data: function () {
+			return {
+				tries: null,
+				high: 0
+			}
+		},
+		mounted() {
+			this.$site.api.get(`/api/quiz/results/${this.quiz.assigntag}/${this.quiz.quiztag}`, {})
+				.then((response) => {
+					if (!response.hasError()) {
+						let data = response.getData('quiz-results');
+						this.tries = data.attributes.tries;
+						this.high = 0;
+						for (let tried of this.tries) {
+							if (+tried.points > +this.high) {
+								this.high = tried.points;
+							}
+						}
+					} else {
+						this.$site.toast(this, response);
+					}
+				})
+				.catch((error) => {
+					this.$site.toast(this, error);
+				});
 
-        },
-        methods: {
-            time(value) {
-                return TimeFormatter.relativeUNIX(value)
-            },
-            elapsed(start, end) {
-                if(end === null) {
-                    return '';
-                }
-                const diff = end - start;
-                const min = Math.floor(diff / 60);
-                const sec = diff % 60;
-                return '' + min + ':' + (sec < 10 ? '0' : '') + sec;
-            }
-        }
-    }
+		},
+		methods: {
+			time(value) {
+				return this.$site.TimeFormatter.relativeUNIX(value)
+			},
+			elapsed(start, end) {
+				if (end === null) {
+					return '';
+				}
+				const diff = end - start;
+				const min = Math.floor(diff / 60);
+				const sec = diff % 60;
+				return '' + min + ':' + (sec < 10 ? '0' : '') + sec;
+			}
+		}
+	}
 
 </script>

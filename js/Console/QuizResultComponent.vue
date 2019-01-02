@@ -64,10 +64,9 @@
 </template>
 
 <script>
-  import FetcherVue from 'users-cl/js/Lib/FetcherVue.vue';
-  import {TimeFormatter} from 'site-cl/js/TimeFormatter';
+	const FetcherVue = Site.FetcherVue;
 
-  /*
+	/*
   answertime
   num
   points
@@ -77,110 +76,110 @@
   studentanswer
   token
    */
-  export default {
-      props: [
-          'memberid', 'assigntag', 'quiztag'
-      ],
-      data: function() {
-          return {
-              fetching: true,
-              user: null,
-              section: null,
-              assignment: null,
-              tries: null,
-              token: null,
-              answers: null,
-              answer: null
-          }
-      },
-      components: {
-          'fetcher': FetcherVue
-      },
-      mounted() {
-          this.$parent.setTitle(': Quiz Result');
+	export default {
+		props: [
+			'memberid', 'assigntag', 'quiztag'
+		],
+		data: function () {
+			return {
+				fetching: true,
+				user: null,
+				section: null,
+				assignment: null,
+				tries: null,
+				token: null,
+				answers: null,
+				answer: null
+			}
+		},
+		components: {
+			'fetcher': FetcherVue
+		},
+		mounted() {
+			this.$parent.setTitle(': Quiz Result');
 
-          Site.api.get(`/api/quiz/result/${this.memberid}/${this.assigntag}/${this.quiztag}`, {})
-              .then((response) => {
-                  if(!response.hasError()) {
-                      this.user = new Users.User(response.getData('quiz-user').attributes);
-                      const member = this.user.member;
+			this.$site.api.get(`/api/quiz/result/${this.memberid}/${this.assigntag}/${this.quiztag}`, {})
+				.then((response) => {
+					if (!response.hasError()) {
+						this.user = new Users.User(response.getData('quiz-user').attributes);
+						const member = this.user.member;
 
-                      this.section = this.$store.getters['course/section'](member.semester, member.section);
-                      this.assignment = this.section.getAssignment(this.assigntag);
+						this.section = this.$store.getters['course/section'](member.semester, member.section);
+						this.assignment = this.section.getAssignment(this.assigntag);
 
-                      this.tries = response.getData('quiz-tries').attributes;
+						this.tries = response.getData('quiz-tries').attributes;
 
-                      const answers = response.getData('quiz-answers');
-                      if(answers !== null) {
-                          this.token = answers.id;
-                          this.answers = answers.attributes;
-                          this.answer = this.answers.length > 0 ? this.answers[0] : null;
-                      } else {
-                          this.token = null;
-                          this.answers = null;
-                          this.answer = null;
-                      }
+						const answers = response.getData('quiz-answers');
+						if (answers !== null) {
+							this.token = answers.id;
+							this.answers = answers.attributes;
+							this.answer = this.answers.length > 0 ? this.answers[0] : null;
+						} else {
+							this.token = null;
+							this.answers = null;
+							this.answer = null;
+						}
 
-                      this.fetching = false;
+						this.fetching = false;
 
 
-                  } else {
-                      Site.toast(this, response);
-                  }
+					} else {
+						this.$site.toast(this, response);
+					}
 
-              })
-              .catch((error) => {
-                  console.log(error);
-                  Site.toast(this, error);
-              });
-      },
-      methods: {
-          time(value) {
-              return TimeFormatter.relativeUNIX(value);
-          },
-          elapsed(start, end) {
-              if(end === null) {
-                  return '';
-              }
-              const diff = end - start;
-              const min = Math.floor(diff / 60);
-              const sec = diff % 60;
-              return '' + min + ':' + (sec < 10 ? '0' : '') + sec;
-          },
-          selectTry(token) {
-              //this.fetching = true;
+				})
+				.catch((error) => {
+					console.log(error);
+					this.$site.toast(this, error);
+				});
+		},
+		methods: {
+			time(value) {
+				return this.$site.TimeFormatter.relativeUNIX(value);
+			},
+			elapsed(start, end) {
+				if (end === null) {
+					return '';
+				}
+				const diff = end - start;
+				const min = Math.floor(diff / 60);
+				const sec = diff % 60;
+				return '' + min + ':' + (sec < 10 ? '0' : '') + sec;
+			},
+			selectTry(token) {
+				//this.fetching = true;
 
-              Site.api.get(`/api/quiz/result/token/${token}`, {})
-                  .then((response) => {
-                      if(!response.hasError()) {
-                          this.token = token;
+				this.$site.api.get(`/api/quiz/result/token/${token}`, {})
+					.then((response) => {
+						if (!response.hasError()) {
+							this.token = token;
 
-                          const answers = response.getData('quiz-answers');
-                          if(answers !== null) {
-                              this.answers = answers.attributes;
-                              this.answer = this.answers.length > 0 ? this.answers[0] : null;
-                          } else {
-                              this.answers = null;
-                              this.answer = null;
-                          }
+							const answers = response.getData('quiz-answers');
+							if (answers !== null) {
+								this.answers = answers.attributes;
+								this.answer = this.answers.length > 0 ? this.answers[0] : null;
+							} else {
+								this.answers = null;
+								this.answer = null;
+							}
 
-                          this.fetching = false;
-                      } else {
-                          Site.toast(this, response);
-                      }
+							this.fetching = false;
+						} else {
+							this.$site.toast(this, response);
+						}
 
-                  })
-                  .catch((error) => {
-                      console.log(error);
-                      Site.toast(this, error);
-                  });
+					})
+					.catch((error) => {
+						console.log(error);
+						this.$site.toast(this, error);
+					});
 
-          },
-          selectAnswer(num) {
-              this.answer = this.answers[num-1];
-          }
-      }
-  }
+			},
+			selectAnswer(num) {
+				this.answer = this.answers[num - 1];
+			}
+		}
+	}
 </script>
 
 <style lang="scss" scoped>

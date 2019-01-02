@@ -7,7 +7,7 @@ require_once __DIR__ . '/init.php';
 
 use CL\Quiz\CheckCPP;
 
-class CheckCppTest extends \PHPUnit_Framework_TestCase
+class CheckCppTest extends \PHPUnit\Framework\TestCase
 {
 
 	

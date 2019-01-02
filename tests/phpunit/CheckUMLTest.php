@@ -7,7 +7,7 @@ require_once __DIR__ . '/init.php';
 
 use CL\Quiz\CheckUML;
 
-class CheckUMLTest extends \PHPUnit_Framework_TestCase
+class CheckUMLTest extends \PHPUnit\Framework\TestCase
 {
 
 	

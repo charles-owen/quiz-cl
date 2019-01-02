@@ -19,7 +19,7 @@
               <td>{{user.email}}</td>
               <td>{{user.roleName()}}</td>
               <td v-for="tag in quizTags">{{status(user, tag)}}
-                <router-link :to="link(user, tag)" v-if="quizResult(user, tag)!==null"><img :src="eye"></router-link></td>
+                <router-link :to="link(user, tag)" v-if="quizResult(user, tag)!==null"><img :src="root + '/vendor/cl/site/img/eye16.png'"></router-link></td>
               <td v-if="results !== null">{{total(user)}}</td>
             </tr>
           </table>
@@ -31,9 +31,11 @@
 </template>
 
 <script>
-  import MembersFetcherComponent from 'course-cl/js/Console/Members/MembersFetcherComponent.vue';
+  const MembersFetcherComponentVue = Site.MembersFetcherComponentVue;
+  const ConsoleComponentBase = Site.ConsoleComponentBase;
 
     export default {
+	    'extends': ConsoleComponentBase,
         props: ['assigntag'],
         data: function() {
             return {
@@ -103,7 +105,7 @@
             }
         },
         components: {
-            'membersfetcher': MembersFetcherComponent
+            'membersfetcher': MembersFetcherComponentVue
         },
         mounted() {
 
