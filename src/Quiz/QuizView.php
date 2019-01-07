@@ -185,11 +185,7 @@ HTML;
 	private $site;      // Site object
 	private $course;    // Course object
 	private $user;      // Active user
-
-	/** @var Quiz Quiz this is a view of */
-	private $quiz;
-
-	/** @var \CL\Course\Assignment Assignment this quiz is for */
-	private $assignment;
+	private $quiz;      // Quiz this is a view of
+	private $assignment; // Assignment this quiz is for
 	private $splash;    // The quiz splash screen
 }

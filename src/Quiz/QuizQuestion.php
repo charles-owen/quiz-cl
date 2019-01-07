@@ -182,7 +182,7 @@ abstract class QuizQuestion {
 
 	/**
 	 * Return answers for the question when viewed in preview mode.
-	 * @property Site $site The Site object
+	 * @param Site $site The Site object
 	 * @return array of answer options
 	 */
 	public function previewerAnswers(Site $site) {
