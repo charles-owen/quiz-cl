@@ -14,11 +14,19 @@
       "CL\\Quiz\\": "src/Quiz"
     }
   },
+  "require" : {
+    "cl/step": "^2.1"
+  },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/charles-owen/quiz-cl.git"
     }
-  ]
+  ],
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.1.x-dev"
+    }
+  }
 }
 
