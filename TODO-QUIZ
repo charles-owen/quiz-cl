@@ -1,4 +1,3 @@
+TODO: Disable autofill on quiz controls
 
 FIXME: Quiz session should only be invalidated if the quiz is actually started.
-
-TEST: Ensure must supply a value works for question
