@@ -215,7 +215,6 @@ ROW;
 
 		$html .=  <<<FINISH
 		</table>
-<p>A quiz is counted as finished if the Finish Quiz button is pressed on the last question in the quiz.</p>
 FINISH;
 		return $html;
     }
