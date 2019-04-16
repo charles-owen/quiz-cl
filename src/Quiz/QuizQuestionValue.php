@@ -119,7 +119,7 @@ END;
 					break;
 
 				case self::Float:
-					$good = (abs($answer - $goodanswer) < $this->tolerance);
+					$good = (abs($answer - $goodanswer) <= ($this->tolerance * 1.1));
 					break;
 
 				case self::Hex:
