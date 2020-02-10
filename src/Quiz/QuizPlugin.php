@@ -102,7 +102,7 @@ class QuizPlugin extends \CL\Site\Plugin implements \CL\Site\IExtension {
 		}
 
 		$step = $extendible;
-		$tag = $args[0];
+		$tag = $step->section->substituteLC($args[0]);
 		$name = $args[1];
 		$points = $args[2];
 		$section = new QuizStepSection($step, $tag, $name, $points);
