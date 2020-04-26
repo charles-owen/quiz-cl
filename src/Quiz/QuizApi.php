@@ -92,11 +92,20 @@ class QuizApi extends \CL\Users\Api\Resource {
 		if($params[1] === 'token') {
 			$token = $params[2];
 
-			$json = new JsonAPI();
+            $json = new JsonAPI();
 
-			$quizAnswers = new QuizAnswers($site->db);
-			$answers = $quizAnswers->getAnswers($token);
-			$json->addData('quiz-answers', $token, $answers);
+			if(count($params) > 3 && $params[3] === 'delete') {
+                $quizTries = new QuizTries($site->db);
+                if(!$quizTries->delete($token)) {
+                    throw new APIException("Invalid token", APIException::GENERAL_ERROR);
+                }
+
+            } else {
+			    // Return the answers for this quiz token
+                $quizAnswers = new QuizAnswers($site->db);
+                $answers = $quizAnswers->getAnswers($token);
+                $json->addData('quiz-answers', $token, $answers);
+            }
 
 			return $json;
 		}

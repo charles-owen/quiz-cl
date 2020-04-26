@@ -41,7 +41,6 @@ class QuizQuestionValue extends QuizQuestion {
 	 *
 	 * answer - An expected answer (multiple can be supplied)
 	 * displayed_answer - Optional answers to display
-	 * display_correct - If false, answers are not displayed.
 	 *
 	 * @param string $property Name of private member to set
 	 * @param mixed $value Value to set

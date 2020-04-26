@@ -206,7 +206,7 @@ SQL;
 	 * @return array of results
 	 */
 	public function getAllMembersBest($semester, $sectionId, $assignTag) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 		$members = new Members($this->config);
 
 		$sql = <<<SQL
@@ -234,6 +234,27 @@ SQL;
 		}
 		return $ret;
 	}
+
+    /**
+     * Delete a quiz try by token.
+     * @param string $token Token to delete
+     * @return bool True if successful
+     */
+	public function delete($token) {
+        $pdo = $this->pdo;
+
+        $sql = <<<SQL
+delete from $this->tablename
+where token=?
+SQL;
+
+        $stmt = $pdo->prepare($sql);
+        if($stmt->execute([$token]) !== TRUE) {
+            return false;
+        }
+
+        return($stmt->rowCount() === 1);
+    }
 
 
 	/**

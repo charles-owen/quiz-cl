@@ -37,17 +37,26 @@ class QuizView extends \CL\Site\ViewAux {
 			$this->assignment = null;
 		}
 
+		if($quiz->tries === 0) {
+		    $tries = " You can take a quiz as many times as you like up until the assignment closing date and time. The system will retain 
+your highest score. Questions are often randomized in various ways and may not appear the same each time.";
+        } else if($quiz->tries === 1) {
+            $tries = " You can take this quiz one time and one time only.";
+        } else {
+            $tries = " You can take this quiz up to $quiz->tries times up until the assignment closing date and time. The system will retain 
+your highest score. Questions are often randomized in various ways and may not appear the same each time.";
+        }
+
 		// Default splash
-		$this->splash = <<<HTML
-<p>This is an online quiz. You can take a quiz as many times as you 
-like up until the assignment closing date and time. The system will retain 
-your highest score. Questions are often randomized in various ways and 
-may not appear the same each time.</p>
+		$splash = <<<HTML
+<p>This is an online quiz.$tries </p>
 
 <p>Do not use the back or forward buttons or reload a page during the quiz. 
 Doing so will exit the quiz without saving the score.</p>
 HTML;
 
+
+		$this->splash = $splash;
 
 		$this->decorApply($this->site, 'quiz.decor.php');
 	}
@@ -110,7 +119,16 @@ HTML;
 		$session = new QuizSession($this->quiz);
 		$session->persist($this->site, $this->time);
 
-		$data = [
+        $quizTries = new QuizTries($this->site->db);
+        $tries = $quizTries->getTries($this->user, $this->quiz->assignTag, $this->quiz->tag);
+        $finished = 0;
+        foreach($tries as $try) {
+            if($try['end'] !== null) {
+                $finished++;
+            }
+        }
+
+        $data = [
 			'token'=>$session->token,
 			'lightning'=>$this->quiz->lightning,
 			'course'=>$this->course->name,
@@ -118,7 +136,10 @@ HTML;
 			'length'=>$this->quiz->length,
 			'assigntag'=>$this->quiz->assignTag,
 			'quiztag'=>$this->quiz->tag,
-			'points'=>$this->quiz->points
+			'points'=>$this->quiz->points,
+            'allowed-tries'=>$this->quiz->tries,
+            'num-tries'=>count($tries),
+            'num-finished'=>$finished
 		];
 
 		if($this->user->atLeast(Member::GRADER)) {

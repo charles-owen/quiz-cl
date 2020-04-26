@@ -15,7 +15,9 @@ use CL\Users\User;
  * Representation of a Quiz
  *
  * @cond
+ * @property int|null lightning Lightning quiz time in seconds or null if not timed
  * @property array questions
+ * @property int tries Number of allowed tried (0=infinite)
  * @endcond
  */
 class Quiz {
@@ -44,6 +46,7 @@ class Quiz {
 	 * points | int | Number of points for this quiz
 	 * questions | array | The QuizQuestion object for all questions
 	 * tag | string | The Quiz tag
+     * tries | int | Number of allowed tries (0=infinite)
 	 *
 	 * @param string $properties Name of property to get
 	 * @return mixed Property value
@@ -71,6 +74,9 @@ class Quiz {
 			case 'questions':
 				return $this->questions;
 
+            case 'tries':
+                return $this->tries;
+
 			default:
 				$trace = debug_backtrace();
 				trigger_error(
@@ -90,6 +96,7 @@ class Quiz {
 	 * Property | Type | Description
 	 * -------- | ---- | -----------
 	 * lightning | int|null | Lightning quiz time in seconds or null if not timed
+     * tries | int | Number of allowed tries (0=infinite)
 	 *
 	 * @param string $properties Name of property to set
 	 * @param mixed $value Value to set property to
@@ -107,6 +114,10 @@ class Quiz {
 			case 'afterWide':
 				$this->afterWide = $value;
 				break;
+
+            case 'tries':
+                $this->tries = +$value;
+                break;
 
 			default:
 				$trace = debug_backtrace();
@@ -324,12 +335,13 @@ HTML;
 	    return dirname(debug_backtrace(1)[1]['file']);
     }
 
-    protected $assignTag;           ///< Assignment this quiz is a part of
-	protected $tag;	                ///< Tag for this quiz, can be the same as the assignment section
-	protected $questions =[];	    ///< The quiz questions in order
-    protected $completeMsg = null;  ///< Optional message to display on quiz completion
-	protected $points;		        ///< Points for this quiz
+    protected $assignTag;           // Assignment this quiz is a part of
+	protected $tag;	                // Tag for this quiz, can be the same as the assignment section
+	protected $questions =[];	    // The quiz questions in order
+    protected $completeMsg = null;  // Optional message to display on quiz completion
+	protected $points;		        // Points for this quiz
 	private   $lightning = null;	// If this is a lightning quiz, set to number of seconds
 	private   $fileDir = null;      // File directory for loaded quiz files
 	private   $fileQuestions = [];  // Mapping from a filename to a question
+    private   $tries = 0;           // Allowed number of tries for the exam, 0=unlimited
 }

@@ -50,8 +50,8 @@ class QuizQuestionMulti extends QuizQuestion {
 	public function bad($bad) { $this->answers[] = array($bad, false); }
 	
 	/** Convert an answer index into the letter for the answer 
-	 * @param $index Answer index starting at 0
-	 * @return Associated letter answer */
+	 * @param int $index Answer index starting at 0
+	 * @return string Associated letter answer */
 	public static function to_option($index) {
 		return chr(ord('A') + $index);
 	}
@@ -121,39 +121,56 @@ OPTION;
         $this->studentanswer = $answergiven;
 
     	// Did they get it right?
+        $response = '';
+
         if($good) {
-        	$html .= "That is correct!</p>";
+            $response .= "That is correct!</p>";
         } else {
-        	$html .= "That is incorrect!</p>";
+            $response .= "That is incorrect!</p>";
+
+            $correctResponse = '';
 
             // Collect array of correct answers
             $correct = array();
             for($i=0;  $i<count($this->answers); $i++) {
-            	$answer = $this->answers[$i];
+                $answer = $this->answers[$i];
                 if($answer[1]) {
-                	$correct[] = array($i, $answer[0]);
+                    $correct[] = array($i, $answer[0]);
                 }
             }
 
             if(count($correct) == 1) {
-            	$option1 = QuizQuestionMulti::to_option($correct[0][0]);
+                $option1 = QuizQuestionMulti::to_option($correct[0][0]);
                 $answercorrect = $correct[0][1];
-            	$html .= "<p>The correct answer is: $option1: $answercorrect</p>";
+                $correctResponse .= "<p>The correct answer is: $option1: $answercorrect</p>";
             } else {
-            	$html .= "<p>The possible correct answers are:<br />";
+                $correctResponse .= "<p>The possible correct answers are:<br />";
                 foreach($correct as $c) {
-                	$option1 = QuizQuestionMulti::to_option($c[0]);
-                	$answerright = $c[1];
-					$answercorrect .= $answerright . '; ';
-            		$html .= "$option1: $answerright<br />";
+                    $option1 = QuizQuestionMulti::to_option($c[0]);
+                    $answerright = $c[1];
+                    $answercorrect .= $answerright . '; ';
+                    $correctResponse .= "$option1: $answerright<br />";
                 }
 
-                $html .= '</p>';
+                $correctResponse .= '</p>';
             }
 
-           	if($this->comment != null) {
-             	$html .= "<div class=\"centerbox primary\">$this->comment</div>";
+            if($this->comment != null) {
+                $correctResponse .= "<div class=\"centerbox primary\">$this->comment</div>";
             }
+
+            if($this->displayCorrect) {
+                $response .= $correctResponse;
+            }
+        }
+
+        if($this->displayResult) {
+            $html .= $response;
+        } else {
+            $html .= <<<HTML
+<p>This question has been set to not indicate if the response is correct or not.</p>
+HTML;
+
         }
 
 		$this->rightanswer = $answercorrect;

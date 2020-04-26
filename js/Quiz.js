@@ -72,6 +72,13 @@ export let Quiz = function(site) {
                             if(this.quiz.question < this.quiz.length) {
                                 this.quiz.question++;
                                 this.page = 'question';
+                            } else {
+                                this.page = 'results';
+                                this.state = state;
+
+                                if(this.after !== null) {
+                                    this.after.innerHTML = '';
+                                }
                             }
                             break;
 

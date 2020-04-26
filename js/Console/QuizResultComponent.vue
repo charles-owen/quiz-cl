@@ -8,21 +8,23 @@
             <p><span>Assignment: </span><span>{{assignment.name}}</span></p>
             <p><span>Quiz: </span><span>{{quiztag}}</span></p>
           </div>
-          <table class="small center">
+          <table v-if="tries.length > 0" class="small center">
             <tr>
+              <th></th>
               <th class="center">When Taken</th>
               <th>Finished?</th>
               <th>Points</th>
               <th>Max</th>
             </tr>
-            <tr v-for="tried in tries" :class="tried.token === token ? 'selected':''"
-                @click.default="selectTry(tried.token)">
-              <td>{{time(tried.start)}}</td>
-              <td>{{elapsed(tried.start, tried.end)}}</td>
-              <td>{{tried.points}}</td>
-              <td>{{tried.maxpoints}}</td>
+            <tr v-for="tried in tries" :class="tried.token === token ? 'selected':''">
+              <td><a v-if="tried.token === token" @click.default="deleteTry(tried)"><img :src="root + '/cl/img/x.png'"></a></td>
+              <td @click.default="selectTry(tried.token)">{{time(tried.start)}}</td>
+              <td @click.default="selectTry(tried.token)">{{elapsed(tried.start, tried.end)}}</td>
+              <td @click.default="selectTry(tried.token)">{{tried.points}}</td>
+              <td @click.default="selectTry(tried.token)">{{tried.maxpoints}}</td>
             </tr>
           </table>
+          <p class="center" v-else>No quiz tries!</p>
 
           <table v-if="answers !== null && answers.length > 0" class="small center">
             <tr>
@@ -180,6 +182,37 @@ token
       },
       selectAnswer(num) {
         this.answer = this.answers[num - 1];
+      },
+      deleteTry(tried) {
+        const token = tried.token;
+
+        new this.$site.Dialog.MessageBox('Are you sure?', 'Are you sure you want to delete this quiz try?',
+                this.$site.Dialog.MessageBox.OKCANCEL, () => {
+                  this.$site.api.post('/api/quiz/result/token/' + token + '/delete', {})
+                          .then((response) => {
+                            if (!response.hasError()) {
+                              // Remove this try from all available tries.
+                              this.tries = this.tries.filter((value, index, arr) => {
+                                return value.token !== token;
+                              });
+
+                              this.answers = null;
+                              this.answer = null;
+
+                              if(this.tries.length > 0) {
+                                this.selectTry(this.tries[0].token);
+                              } else {
+                                this.token = null;
+                              }
+                            } else {
+                              this.$site.toast(this, response);
+                            }
+
+                          })
+                          .catch((error) => {
+                            this.$site.toast(this, error);
+                          });
+                });
       }
     }
   }

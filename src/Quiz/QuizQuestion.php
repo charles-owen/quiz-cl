@@ -15,6 +15,8 @@ use CL\Users\User;
  * @cond
  * @property string comment
  * @property string correct
+ * @property boolean displayCorrect Display the correct answer if they get it wrong
+ * @property boolean displayResult Display if correct or not
  * @property string text
  * @property int points
  * @endcond
@@ -38,8 +40,12 @@ abstract class QuizQuestion {
 			case 'correct':
 				return $this->correct;
 
-			case 'display_correct':
+            case 'display_correct':
+            case 'displayCorrect':
 				return $this->display_correct;
+
+            case 'displayResult':
+                return $this->displayResult;
 
 			case 'file':
 				return $this->file;
@@ -129,9 +135,14 @@ abstract class QuizQuestion {
 				$this->quiz = $value;
 				break;
 
-			case 'display_correct':
+            case 'display_correct':
+            case 'displayCorrect':
 				$this->display_correct = $value;
 				break;
+
+            case 'displayResult':
+                $this->displayResult = $value;
+                break;
 
 			case 'mustProvideMessage':
 				$this->mustProvideMessage = $value;
@@ -224,18 +235,19 @@ abstract class QuizQuestion {
 	    return $data;
     }
 	
-	protected $text = null;		///< Text of the question
-	protected $comment = null;	///< Optional comment to display when they get it wrong
+	protected $text = null;		// Text of the question
+	protected $comment = null;	// Optional comment to display when they get it wrong
 
-	protected $quiz = null;		///< Quiz this question is a part of
-	protected $num = 0;			///< Question number
+	protected $quiz = null;		// Quiz this question is a part of
+	protected $num = 0;			// Question number
 	
-	protected $correct = null;	        ///< Total number of correct points
-	protected $studentanswer = null;	///< The student supplied answer
-	protected $rightanswer = null;		///< The correct answer
-	protected $points = 1;		        ///< Total points for a correct answer
-	protected $file = null;		        ///< File for a loaded quiz question
-	protected $display_correct = false;	///< Display correct answer?
+	protected $correct = null;	        // Total number of correct points
+	protected $studentanswer = null;	// The student supplied answer
+	protected $rightanswer = null;		// The correct answer
+	protected $points = 1;		        // Total points for a correct answer
+	protected $file = null;		        // File for a loaded quiz question
+	protected $display_correct = true;	// Display correct answer?
+    private $displayResult = true;      // Display correct or not correct
 
 	private $mustProvideMessage = null;
 
