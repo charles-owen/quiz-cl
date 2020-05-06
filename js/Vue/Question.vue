@@ -54,8 +54,8 @@
         this.mustProvideMessage = data.mustProvideMessage;
 
         const after = document.getElementById('cl-quiz-after');
-        if (after !== null) {
-          after.innerHTML = data.attributes.after;
+        if (after !== null && data.after !== undefined) {
+          after.innerHTML = data.after;
         }
 
         // Support indicating to external Javascript that a quiz
