@@ -1,3 +1,4 @@
+<script src="../../../../../cl/dist/site.js"></script>
 <template>
   <div>
     <div v-if="question!==null">
