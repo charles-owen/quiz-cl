@@ -106,7 +106,7 @@ token
       this.$site.api.get(`/api/quiz/result/${this.memberid}/${this.assigntag}/${this.quiztag}`, {})
               .then((response) => {
                 if (!response.hasError()) {
-                  this.quizUser = new Users.User(response.getData('quiz-user').attributes);
+                  this.quizUser = new Site.User(response.getData('quiz-user').attributes);
                   const member = this.quizUser.member;
 
                   this.section = this.$store.getters['course/section'](member.semester, member.section);
