@@ -151,26 +151,7 @@ TABLE;
 		return ['points'=>0];
 	}
 
-//	/** Present the grading from to staff */
-//	public function grading_form(\User $user) {
-//		$html = "<h2>Quizzes</h2>";
-//
-//		$this->compute_points($user);
-//
-//		$grade = $this->get_grade();
-//
-//		$html .= <<<TABLE
-//<table class="quiz-grading">
-//<tr><th>Correct</th><th>Points</th><th>Available</th></tr>
-//<tr><td>$this->correct/$this->total</td><td>$grade</td><td>$this->points</td></tr>
-//</table>
-//TABLE;
-//
-//		return $html;
-//	}
 
-
-	
 //	/** Compute the quiz points.
 //	 *
 //	 * This computes the member variables $comment and $total

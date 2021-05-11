@@ -62,6 +62,9 @@ class QuizApi extends \CL\Users\Api\Resource {
 			case 'all':
 				return $this->resultsAll($site, $server, $user, $params);
 
+            case 'recompute':
+                return $this->recompute($site, $user, $server, $params, $time);
+
 			case 'tables':
 				return $this->tables($site, $server, new QuizTables($site->db));
 		}
@@ -259,7 +262,7 @@ class QuizApi extends \CL\Users\Api\Resource {
 	}
 
 	private function updateGrade(Site $site, User $user, Assignment $assignment, Quiz $quiz, $time) {
-		// Does does the assignment have a quiz grading component?
+		// Does the assignment have a grading component?
 		if($assignment->grading === null) {
 			return;
 		}
@@ -379,6 +382,76 @@ class QuizApi extends \CL\Users\Api\Resource {
 		return $json;
 	}
 
+	private function recompute(Site $site, User $user, Server $server, $params, $time) {
+        $this->atLeast($user, Member::INSTRUCTOR);
+
+        if (count($params) < 2) {
+            throw new APIException("Invalid API Path x", APIException::INVALID_API_PATH);
+        }
+
+        $assignTag = $params[1];
+        $course = $site->course;
+        $section = $course->get_section_for($user);
+        $assignment = $section->get_assignment($assignTag);
+        if($assignment === null) {
+            throw new APIException("Invalid API Usage", APIException::INVALID_API_USAGE);
+        }
+
+        $assignment->load();
+
+        // Does the assignment have a grading component?
+        if($assignment->grading === null) {
+            throw new APIException("Assignmment does not have a grading component", APIException::GENERAL_ERROR);
+        }
+
+        $gradeQuiz = null;
+        foreach($assignment->grading->parts as $part) {
+            if($part instanceof GradeQuizzes) {
+                $gradeQuiz = $part;
+                break;
+            }
+        }
+
+        if($gradeQuiz === null) {
+            throw new APIException("Assignmment does not have a quiz grading component", APIException::GENERAL_ERROR);
+        }
+
+        // What is the best score for this quiz?
+        $quizTries = new QuizTries($site->db);
+
+        $users = new Members($site->db);
+        $students = $users->query([
+            'semester'=>$section->semester,
+            'section'=>$section->id
+        ]);
+
+        $grades = new Grades($site->db);
+
+        foreach($students as $student) {
+            // Get the grade for this assignment/quiz
+
+            $grade = $grades->get($student, $assignment->tag, $gradeQuiz->tag);
+
+            // Compute the current total points
+            $total = 0;
+            $points = 0;
+            foreach($gradeQuiz->tags as $tag) {
+                $points += $tag['points'];
+                $total += $grade->meta->get('results', $tag['tag'], ['grade'=>0])['grade'];
+            }
+
+            // Make that into a grade
+            if($total > 0) {
+                $newPoints = round(($total / $points) * $gradeQuiz->points, 0);
+                // echo $student->userId . ': ' . $grade->points . '/' . $newPoints . "\n";
+                $grade->points = $newPoints;
+                $grades->post($student, $grade);
+            }
+        }
+
+        $json = new JsonAPI();
+        return $json;
+    }
 
 	private function getSession(Site $site, User $user, Server $server, array $params, $time)
 	{

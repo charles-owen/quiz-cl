@@ -25,7 +25,7 @@
           </table>
         </template>
       </membersfetcher>
-
+      <p v-if="user.atLeast(this.$site.Member.INSTRUCTOR)" class="center"><button @click.prevent.stop="recompute">Recompute Grades</button></p>
     </div>
   </div>
 </template>
@@ -110,6 +110,20 @@
       },
       link(user, tag) {
         return `${Site.root}/cl/console/quiz/result/${user.member.id}/${this.assignment.tag}/${tag}`;
+      },
+      recompute() {
+        this.$site.api.post('/api/quiz/recompute/' + this.assignment.tag, {})
+            .then((response) => {
+              if (!response.hasError()) {
+
+              } else {
+                this.$site.toast(this, response);
+              }
+
+            })
+            .catch((error) => {
+              this.$site.toast(this, error);
+            });
       }
     },
     components: {
