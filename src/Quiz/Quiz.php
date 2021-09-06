@@ -133,7 +133,7 @@ class Quiz {
 
     /** 
      * Add a question to the quiz.
-     * \param $question The question object to add 
+     * @param $question The question object to add
      */
     public function add_question(QuizQuestion $question)
     {

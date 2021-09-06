@@ -23,7 +23,7 @@ class GradeQuizzes extends GradePart {
 
 	/**
 	 * Constructor
-	 * \param int $points The maximum possible points for this category
+	 * @param int $points The maximum possible points for this category
 	 * @param array $tags Tags for all quizzes in the assignment
 	 */
 	public function __construct($points, array $tags) {
