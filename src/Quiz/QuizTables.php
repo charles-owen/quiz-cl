@@ -15,7 +15,7 @@ use CL\Tables\Config;
  */
 class QuizTables extends \CL\Tables\TableMaker {
 	/**
-	 * FileSystemTables constructor.
+	 * QuizTables constructor.
 	 * @param Config $config
 	 */
 	public function __construct(Config $config) {
