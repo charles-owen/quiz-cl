@@ -206,7 +206,6 @@ class QuizApi extends \CL\Users\Api\Resource {
 		$session = $this->getSession($site, $user, $server, $params, $time);
 		$quiz = $session->quiz;
 		$assignment = $this->getAssignment($site, $user, $quiz);
-		$assignment->load();
 		$open = $assignment->is_open($user, $time);
 
 		$token = $session->token;
@@ -484,6 +483,7 @@ class QuizApi extends \CL\Users\Api\Resource {
 			throw new APIException("Invalid API Usage", APIException::INVALID_API_USAGE);
 		}
 
+        $assignment->load();
 		return $assignment;
 	}
 }

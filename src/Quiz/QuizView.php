@@ -33,6 +33,7 @@ class QuizView extends \CL\Site\ViewAux {
 		if(!$this->user->guest) {
 			$section = $this->course->get_section_for($this->user);
 			$this->assignment = $section->get_assignment($quiz->assignTag);
+            $this->assignment->load();
 		} else {
 			$this->assignment = null;
 		}
