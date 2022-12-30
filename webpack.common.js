@@ -2,6 +2,9 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		Quiz: path.resolve(__dirname, 'index.js')
+		Quiz: {
+			import: path.resolve(__dirname, 'index.js'),
+			dependOn: ['Console', 'Course', 'Users', 'Site']
+		}
 	}
 }

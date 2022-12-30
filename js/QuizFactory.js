@@ -16,6 +16,7 @@ QuizFactory.create = function(site) {
         if(element !== null) {
             quiz.initialize(element);
         }
-    });
+    })
 
+    return quiz
 }

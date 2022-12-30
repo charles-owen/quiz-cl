@@ -3,7 +3,7 @@
     <div class="full">
 
       <membersfetcher :fetching="results === null">
-        <template slot-scope="fetcher">
+        <template v-slot="fetcher">
           <table class="small">
             <tr>
               <th>User</th>
@@ -139,7 +139,7 @@
       this.section = this.$store.getters['course/section'](member.semester, member.section);
       this.assignment = this.section.getAssignment(this.assigntag);
 
-      this.$parent.setTitle(': ' + this.assignment.shortname + ' Quiz Status');
+      this.$root.setTitle(': ' + this.assignment.shortname + ' Quiz Status');
 
       this.$site.api.get('/api/quiz/all/' + this.assigntag, query)
               .then((response) => {

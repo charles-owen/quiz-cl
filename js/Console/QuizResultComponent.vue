@@ -100,7 +100,7 @@ token
       'fetcher': FetcherVue
     },
     mounted() {
-      this.$parent.setTitle(': Quiz Result');
+      this.$root.setTitle(': Quiz Result');
       this.addNav2Link('Exit', 2, '/cl/console/quiz/results/' + this.assigntag);
 
       this.$site.api.get(`/api/quiz/result/${this.memberid}/${this.assigntag}/${this.quiztag}`, {})

@@ -6,15 +6,17 @@
 import {QuizFactory} from "./js/QuizFactory";
 import {QuizConsole} from './js/Console/QuizConsole';
 
-//
-// Create the Quiz components
-//
-QuizFactory.create(Site.Site);
+if(!Site.Quiz) {
+    //
+    // Create the Quiz components
+    //
+    Site.Quiz = QuizFactory.create(Site);
 
-//
-// Install the console components
-//
-
-if(Site.Site.console !== undefined) {
-    QuizConsole.setup(Site.Site.console);
+    //
+    // Install the console components
+    //
+    if(Site.Console !== undefined) {
+        QuizConsole.setup(Site.Console);
+    }
 }
+

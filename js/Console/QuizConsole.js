@@ -25,6 +25,6 @@ QuizConsole.setup = function(Console) {
         {route: '/quiz/result/:memberid/:assigntag/:quiztag', component: QuizResultComponent, props: true}
     );
 
-    Console.course.assignmentLink('quiz', 'quizzes', '/quiz/results/:assigntag');
+    Console.CourseConsole.assignmentLink('quiz', 'quizzes', '/quiz/results/:assigntag');
 }
 
