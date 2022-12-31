@@ -12,7 +12,7 @@ QuizFactory.create = function(site) {
     const quiz = new Quiz(site);
 
     site.start( () => {
-        let element = document.querySelector('div.cl-quiz');
+        let element = document.querySelector('div.cl-quiz-install');
         if(element !== null) {
             quiz.initialize(element);
         }

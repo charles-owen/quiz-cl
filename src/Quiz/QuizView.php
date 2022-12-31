@@ -188,7 +188,7 @@ HTML;
 		$after = $this->presentAfter();
 
 		$html = <<<HTML
-<div class="cl-quiz">$json</div>$after
+<div class="cl-quiz-install">$json</div>$after
 HTML;
 
 		return $html;

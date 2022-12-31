@@ -70,7 +70,7 @@ class QuizPlugin extends \CL\Site\Plugin implements \CL\Site\IExtension {
 			});
 
 		} else if($object instanceof ConsoleView) {
-			$object->addJS('quiz');
+			$object->addJS('quizconsole');
 		} else if($object instanceof \CL\Course\AssignmentView) {
 			// Add quiz results to this page
 			$view = $object;

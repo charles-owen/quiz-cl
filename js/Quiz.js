@@ -10,12 +10,14 @@ import PreviewVue from './Vue/Preview.vue';
 
 import {States} from './States';
 
+
 /**
  * Quiz presentation Vue
  * @param site Site object
  * @constructor
  */
 export let Quiz = function(site) {
+    const VueHelper = site.VueHelper
 
     this.initialize = function(element) {
         let quiz = JSON.parse(element.textContent);
@@ -26,10 +28,8 @@ export let Quiz = function(site) {
   <previewer v-if="quiz.preview !== undefined" :quiz="quiz" v-on:preview="preview($event)"></previewer>
 </div>`;
 
-        new site.Vue({
-            el: element,
+        const app = VueHelper.createApp({
             template: template,
-            site,
             data: function() {
                 return {
                     quiz: quiz,
@@ -112,6 +112,8 @@ export let Quiz = function(site) {
             }
         })
 
+        app.config.globalProperties.$site = site
+        VueHelper.mount(app, element)
     }
 }
 
