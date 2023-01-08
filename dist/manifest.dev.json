@@ -1,3 +1,4 @@
 {
-  "Quiz.js": "/cl/dist/quiz.dev.js"
+  "Quiz.js": "/cl/dist/quiz.dev.js",
+  "QuizConsole.js": "/cl/dist/quizconsole.dev.js"
 }
